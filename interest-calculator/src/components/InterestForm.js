@@ -15,10 +15,9 @@ export default function InterestForm() {
         setInterestType(event.target.value);
         // Reset compounding frequency when switching interest type
         setCompoundingFrequency('monthly');
-    }
-
-    function handleChangeChargeType(event) {
-        setChargeType(event.target.value);
+        // Reset charge type and value when switching interest type
+        setChargeType('rupees');
+        setChargeValue('');
     }
 
     function handleChangeChargeValue(event) {
@@ -49,27 +48,22 @@ export default function InterestForm() {
         let interest = 0;
         if (interestType === 'simple') {
             if (chargeType === 'rupees') {
-                // Convert rupee charge value to monthly interest
-                const monthlyInterest = (parseFloat(chargeValue) * 12) / 100; // Assuming 12 months in a year
+                const monthlyInterest = (parseFloat(chargeValue) * 12) / 100; // Convert rupee charge value to monthly interest
                 interest = (monthlyInterest * parseFloat(amount)) * (duration / 365);
             } else if (chargeType === 'percentage') {
                 interest = (parseFloat(amount) * parseFloat(chargeValue) * duration) / (365 * 100);
             }
         } else if (interestType === 'compound') {
-            if (chargeType === 'rupees') {
-                // Convert rupee charge value to yearly or monthly interest
-                const yearlyInterest = (parseFloat(chargeValue) * 12) / 100; // Assuming 12 months in a year
-                const monthlyInterest = yearlyInterest / 12;
-                const frequency = compoundingFrequency === 'monthly' ? 12 : 1;
-                interest = parseFloat(amount) * (Math.pow((1 + monthlyInterest / 100), (duration / frequency / 365 * frequency)) - 1);
-            } else if (chargeType === 'percentage') {
-                interest = parseFloat(amount) * (Math.pow((1 + parseFloat(chargeValue) / 100), (duration / 365)) - 1);
-            }
+            const r = parseFloat(chargeValue) / 100; // Annual interest rate
+            const n = compoundingFrequency === 'monthly' ? 12 : 1; // Compounding frequency
+            const t = duration / 365; // Time in years
+            interest = parseFloat(amount) * Math.pow(1 + r / n, n * t) - parseFloat(amount); // Compound interest formula
         }
     
         setCalculatedInterest(interest.toFixed(2));
     }
-
+    
+    
     return (
         <div>
             <div className="container todo-container">
@@ -84,6 +78,31 @@ export default function InterestForm() {
                             <option value="compound">Compound Interest</option>
                         </select>
                     </div>
+                    {interestType !== 'compound' && (
+                        <div className="form-group">
+                            <label htmlFor="chargeType"><b>Select Charge Type:</b></label>
+                            <select className="form-control" name="chargeType" value={chargeType} onChange={() => {}} required>
+                                <option value="rupees">Interest In Rupees: 1.5 Rupees, 2 Rupees</option>
+                                <option value="percentage">Interest In Percentage: 10 Percent, 15 Percent</option>
+                            </select>
+                        </div>
+                    )}
+                    {interestType !== 'compound' && (
+                        <div className="form-group">
+                            <label htmlFor="chargeValue"><b>{chargeType === 'rupees' ? 'Enter Rupee Value:' : 'Enter Percentage Value:'}</b></label>
+                            <input type="text" className="form-control" placeholder={`Enter ${chargeType === 'rupees' ? 'rupee' : 'percentage'} value`} value={chargeValue} onChange={handleChangeChargeValue} required />
+                        </div>
+                    )}
+                    <div className="form-group">
+                        <label htmlFor="amount"><b>Amount:</b></label>
+                        <input type="number" className="form-control" placeholder="Enter amount" value={amount} onChange={handleChangeAmount} required />
+                    </div>
+                    {interestType === 'compound' && (
+                        <div className="form-group">
+                            <label htmlFor="chargeValue"><b>Enter Percentage Value:</b></label>
+                            <input type="text" className="form-control" placeholder="Enter percentage value" value={chargeValue} onChange={handleChangeChargeValue} required />
+                        </div>
+                    )}
                     {interestType === 'compound' && (
                         <div className="form-group">
                             <label htmlFor="compoundingFrequency"><b>Select Compounding Frequency:</b></label>
@@ -93,21 +112,6 @@ export default function InterestForm() {
                             </select>
                         </div>
                     )}
-                    <div className="form-group">
-                        <label htmlFor="chargeType"><b>Select Charge Type:</b></label>
-                        <select className="form-control" name="chargeType" value={chargeType} onChange={handleChangeChargeType} required>
-                            <option value="rupees">Interest In Rupees: 1.5 Rupees, 2 Rupees</option>
-                            <option value="percentage">Interest In Percentage: 10 Percent, 15 Percent</option>
-                        </select>
-                    </div>
-                    <div className="form-group">
-                        <label htmlFor="chargeValue"><b>{chargeType === 'rupees' ? 'Enter Rupee Value:' : 'Enter Percentage Value:'}</b></label>
-                        <input type="text" className="form-control" placeholder={`Enter ${chargeType === 'rupees' ? 'rupee' : 'percentage'} value`} value={chargeValue} onChange={handleChangeChargeValue} required />
-                    </div>
-                    <div className="form-group">
-                        <label htmlFor="amount"><b>Amount:</b></label>
-                        <input type="number" className="form-control" placeholder="Enter amount" value={amount} onChange={handleChangeAmount} required />
-                    </div>
                     <div className="form-group">
                         <label htmlFor="startDate"><b>Select Start Date:</b></label>
                         <input type="date" className="form-control" name="startDate" value={startDate} onChange={handleChangeStartDate} required />

@@ -1,5 +1,6 @@
 
 // import './App.css';
+import Footer from './components/Footer';
 import InterestForm from './components/InterestForm';
 import Navbar from './components/Navbar';
 
@@ -9,7 +10,8 @@ function App() {
       <Navbar></Navbar>
       <div className="container my-3">
       <InterestForm></InterestForm>
-      </div>
+      </div>  
+      <Footer></Footer>
     </div>
   );
 }

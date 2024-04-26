@@ -106,3 +106,26 @@
       font-size: 10px;
     }
   }
+
+
+/* Footer styles */
+.nav1 {
+  background-color: #000;
+  color: rgba(255, 255, 255, 1);
+  letter-spacing: 2px;
+  font-weight: bold;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  z-index: 999;
+  padding: 10px;
+  text-align: center;
+  overflow: hidden;
+  box-shadow: 0 0 10px rgba(74, 190, 113, 0.5);
+  margin: 20;
+}
+
+.footer-link {
+  color: #88f572; /* Change the color to your preferred link color */
+  /*text-decoration: underline;  Add underline to the link */
+}
