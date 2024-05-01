@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import './InterestForm.css';
 
 export default function InterestForm() {
@@ -97,6 +98,14 @@ export default function InterestForm() {
                         <label htmlFor="amount"><b>Amount:</b></label>
                         <input type="number" className="form-control" placeholder="Enter amount" value={amount} onChange={handleChangeAmount} required />
                     </div>
+                    <div className="form-group">
+                        <label htmlFor="startDate"><b>Select Start Date:</b></label>
+                        <input type="date" className="form-control" name="startDate" value={startDate} onChange={handleChangeStartDate} required />
+                    </div>
+                    <div className="form-group">
+                        <label htmlFor="endDate"><b>Select End Date:</b></label>
+                        <input type="date" className="form-control" name="endDate" value={endDate} onChange={handleChangeEndDate} required />
+                    </div>
                     {interestType === 'compound' && (
                         <div className="form-group">
                             <label htmlFor="chargeValue"><b>Enter Percentage Value:</b></label>
@@ -112,15 +121,7 @@ export default function InterestForm() {
                             </select>
                         </div>
                     )}
-                    <div className="form-group">
-                        <label htmlFor="startDate"><b>Select Start Date:</b></label>
-                        <input type="date" className="form-control" name="startDate" value={startDate} onChange={handleChangeStartDate} required />
-                    </div>
-                    <div className="form-group">
-                        <label htmlFor="endDate"><b>Select End Date:</b></label>
-                        <input type="date" className="form-control" name="endDate" value={endDate} onChange={handleChangeEndDate} required />
-                    </div>
-                    <button type="button" className="btn btn-primary" onClick={calculateInterest}>Calculate Interest</button>
+                    <Link type="button" className="btn btn-primary" onClick={calculateInterest} to="">Calculate Interest</Link>
                     {calculatedInterest !== null && <p><b>Calculated Interest:</b> {calculatedInterest}</p>}
                 </form>
             </div>
