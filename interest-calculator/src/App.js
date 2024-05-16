@@ -1,24 +1,39 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import Footer from './components/Footer';
-import InterestForm from './components/InterestForm';
-import InterestDetails from './components/InterestDetails';
+import { ThemeProvider, createTheme } from '@mui/material/styles';
 import Navbar from './components/Navbar';
+import Footer from './components/Footer';
+import InterestDetails from './components/InterestDetails';
+import InterestForm from './components/InterestForm';
+
+const theme = createTheme({
+    palette: {
+        primary: {
+            main: '#1976d2', // Customize your primary color
+        },
+        secondary: {
+            main: '#dc004e', // Customize your secondary color
+        },
+    },
+    typography: {
+        fontFamily: 'Roboto, sans-serif',
+    },
+});
 
 function App() {
     return (
-        <Router>
-            <div>
+        <ThemeProvider theme={theme}>
+            <Router>
                 <Navbar />
                 <div className="container my-3">
-                    <InterestForm />
                     <Routes>
-                        <Route path="/interest-details" element={<InterestDetails />} />
+                        <Route path="/" element={<InterestForm />} />
+                        <Route path="/interest" element={<InterestDetails />} />
                     </Routes>
                 </div>
                 <Footer />
-            </div>
-        </Router>
+            </Router>
+        </ThemeProvider>
     );
 }
 

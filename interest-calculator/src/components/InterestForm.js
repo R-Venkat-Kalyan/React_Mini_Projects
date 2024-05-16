@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import './InterestForm.css';
 
 export default function InterestForm() {
@@ -10,15 +10,22 @@ export default function InterestForm() {
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
     const [compoundingFrequency, setCompoundingFrequency] = useState('monthly');
-    const [calculatedInterest, setCalculatedInterest] = useState(null);
+    const navigate = useNavigate();
 
     function handleChangeInterestType(event) {
         setInterestType(event.target.value);
-        // Reset compounding frequency when switching interest type
         setCompoundingFrequency('monthly');
-        // Reset charge type and value when switching interest type
         setChargeType('rupees');
         setChargeValue('');
+        
+        if (event.target.value === 'compound') {
+            alert("To convert an interest rate given in rupees to a percentage, simply multiply(*) the interest rate in rupees by 12.\nFor instance, 1.5 rupees equals 18% (1.5 * 12)");
+            setChargeType('percentage')
+        }
+    }
+
+    function handleChangeChargeType(event) {
+        setChargeType(event.target.value);
     }
 
     function handleChangeChargeValue(event) {
@@ -26,8 +33,10 @@ export default function InterestForm() {
     }
 
     function handleChangeAmount(event) {
-        setAmount(event.target.value);
+        const inputValue = parseFloat(event.target.value);
+        setAmount(isNaN(inputValue) ? '' : inputValue);
     }
+    
 
     function handleChangeStartDate(event) {
         setStartDate(event.target.value);
@@ -45,8 +54,9 @@ export default function InterestForm() {
         const start = new Date(startDate);
         const end = new Date(endDate);
         const duration = (end - start) / (1000 * 3600 * 24); // Duration in days
-    
+
         let interest = 0;
+
         if (interestType === 'simple') {
             if (chargeType === 'rupees') {
                 const monthlyInterest = (parseFloat(chargeValue) * 12) / 100; // Convert rupee charge value to monthly interest
@@ -60,18 +70,29 @@ export default function InterestForm() {
             const t = duration / 365; // Time in years
             interest = parseFloat(amount) * Math.pow(1 + r / n, n * t) - parseFloat(amount); // Compound interest formula
         }
-    
-        setCalculatedInterest(interest.toFixed(2));
+
+        navigate('/interest', {
+            state: {
+                calculatedInterest: interest.toFixed(2),
+                interestType,
+                chargeType,
+                chargeValue,
+                amount,
+                startDate,
+                endDate,
+                compoundingFrequency,
+                duration
+            }
+        });
     }
-    
-    
+
     return (
         <div>
             <div className="container todo-container">
                 <div className="todo-header">
                     <h2>Interest Calculator</h2>
                 </div>
-                <form method="post" className="todo-form">
+                <form className="todo-form">
                     <div className="form-group">
                         <label htmlFor="interestType"><b>Select Interest Type:</b></label>
                         <select className="form-control" name="interestType" value={interestType} onChange={handleChangeInterestType} required>
@@ -82,9 +103,24 @@ export default function InterestForm() {
                     {interestType !== 'compound' && (
                         <div className="form-group">
                             <label htmlFor="chargeType"><b>Select Charge Type:</b></label>
-                            <select className="form-control" name="chargeType" value={chargeType} onChange={() => {}} required>
+                            <select className="form-control" name="chargeType" value={chargeType} onChange={handleChangeChargeType} required>
                                 <option value="rupees">Interest In Rupees: 1.5 Rupees, 2 Rupees</option>
                                 <option value="percentage">Interest In Percentage: 10 Percent, 15 Percent</option>
+                            </select>
+                        </div>
+                    )}
+                    {interestType === 'compound' && (
+                        <div className="form-group">
+                            <label htmlFor="chargeValue"><b>Enter Percentage Value:</b></label>
+                            <input type="text" className="form-control" placeholder="Enter percentage value" value={chargeValue} onChange={handleChangeChargeValue} required />
+                        </div>
+                    )}
+                    {interestType === 'compound' && (
+                        <div className="form-group">
+                            <label htmlFor="compoundingFrequency"><b>Select Compounding Frequency:</b></label>
+                            <select className="form-control" name="compoundingFrequency" value={compoundingFrequency} onChange={handleChangeCompoundingFrequency} required>
+                                <option value="monthly">Monthly</option>
+                                <option value="yearly">Yearly</option>
                             </select>
                         </div>
                     )}
@@ -106,23 +142,13 @@ export default function InterestForm() {
                         <label htmlFor="endDate"><b>Select End Date:</b></label>
                         <input type="date" className="form-control" name="endDate" value={endDate} onChange={handleChangeEndDate} required />
                     </div>
-                    {interestType === 'compound' && (
-                        <div className="form-group">
-                            <label htmlFor="chargeValue"><b>Enter Percentage Value:</b></label>
-                            <input type="text" className="form-control" placeholder="Enter percentage value" value={chargeValue} onChange={handleChangeChargeValue} required />
-                        </div>
-                    )}
-                    {interestType === 'compound' && (
-                        <div className="form-group">
-                            <label htmlFor="compoundingFrequency"><b>Select Compounding Frequency:</b></label>
-                            <select className="form-control" name="compoundingFrequency" value={compoundingFrequency} onChange={handleChangeCompoundingFrequency} required>
-                                <option value="monthly">Monthly</option>
-                                <option value="yearly">Yearly</option>
-                            </select>
-                        </div>
-                    )}
-                    <Link type="button" className="btn btn-primary" onClick={calculateInterest} to="">Calculate Interest</Link>
-                    {calculatedInterest !== null && <p><b>Calculated Interest:</b> {calculatedInterest}</p>}
+                    <button
+                        type="button"
+                        className="btn btn-primary"
+                        onClick={calculateInterest}
+                    >
+                        Calculate Interest
+                    </button>
                 </form>
             </div>
         </div>
