@@ -1,0 +1,73 @@
+/* Styling the container for the calculator */
+.container {
+    display: table;
+    border-collapse: collapse;
+    margin: 0 auto;
+}
+
+button {
+    width: 60px;
+    height: 60px;
+    font-size: 18px;
+    margin: 5px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+}
+
+caption {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    display: block;
+    text-align: center;
+}
+
+td {
+    text-align: center;
+}
+
+/* Operator buttons in moderate blue */
+.operator {
+    background-color: #007bff;
+    color: white;
+}
+
+/* Green background for = button */
+.green-cell button {
+    background-color: green;
+    color: white;
+    border: none;
+    border-radius: 10px;
+}
+
+/* Red background for C button */
+.red-button {
+    background-color: red;
+    color: white;
+}
+
+/* Styling the result input */
+#result {
+    width: 90%;
+    padding: 10px;
+    font-size: 24px;
+    text-align: right;
+    border-radius: 10px;
+    border: 2px solid #ccc;
+    margin-bottom: 15px;
+}
+
+.calc-wrapper {
+    width: 300px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
